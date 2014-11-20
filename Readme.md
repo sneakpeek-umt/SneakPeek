@@ -1,4 +1,4 @@
-SneakPeak
+SneakPeek
 ========
 3D Packet Analysis Visualization
 
