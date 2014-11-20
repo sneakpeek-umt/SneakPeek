@@ -1,0 +1,21 @@
+{
+  "name": "taMe",
+  "description": "A data exploratation/analysis/visualization tool for network data.",
+  "version": "0.0.1a",
+  "homepage": "None",
+  "license": "Commercial",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.x",
+    "angular-mocks": "~1.2.x",
+    "angular-route": "~1.2.x",
+    "angular-resource": "~1.2.x",
+    "angular-animate": "~1.2.x",
+    "html5-boilerplate": "~4.3.0",
+    "jquery": "1.10.2",
+    "jquery-ui": "1.10.2",
+    "bootstrap": "~3.1.1",
+    "d3": "~3.4.13",
+    "socket.io": "~1.1.0"
+  }
+}
