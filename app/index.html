@@ -8,30 +8,180 @@ Evin Ozer
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		
-		<title>taMe</title>
+		<title>SneakPeek</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
 
 		<!-- Client-Side Libraries -->
 		<!-- Many libraries depend on jQuery, if they have not encapsulated their own. -->
 		<script type="text/javascript" src="./js/libs/jquery/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="./js/libs/springy/springy.js"></script>
 		<script type="text/javascript" src="./js/libs/three.js/three.min.js"></script>
+		<script type="text/javascript" src="./js/libs/three.js/extra/Octree.js"></script>
 		<script type="text/javascript" src="./js/libs/three.js/controls/TrackballControls.js"></script>
 		<script type="text/javascript" src="./js/libs/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="./js/mousetrap.min.js"></script>
 		<script type="text/javascript" src="./js/dat.gui.min.js"></script>
 
+		<!-- UI Elements -->
+		<link rel="stylesheet" href="./js/libs/jquery-ui-1.11.2.custom/jquery-ui.min.css">
+		<script type="text/javascript" src="./js/libs/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="./js/libs/dropzone.js"></script>
+
 		<!-- Application -->
-		<script type="text/javascript" src="./js/tame.js"></script>
-		<script type="text/javascript" src="./js/tame.utility.js"></script>
-		<script type="text/javascript" src="./js/tame.message.js"></script>
+		<script type="text/javascript" src="./js/sneakpeek.js"></script>
+		<script type="text/javascript" src="./js/sneakpeek.utility.js"></script>
+		<script type="text/javascript" src="./js/sneakpeek.ui.js"></script>
+		<script type="text/javascript" src="./js/sneakpeek.message.js"></script>
+
+		<link rel="stylesheet" href="./css/sneakpeek.css"></script>
+
+		<script>
+			$(function() {
+				var availableTags = [
+					"ActionScript",
+					"AppleScript",
+					"Asp",
+					"BASIC",
+					"C",
+					"C++",
+					"Clojure",
+					"COBOL",
+					"ColdFusion",
+					"Erlang",
+					"Fortran",
+					"Groovy",
+					"Haskell",
+					"Java",
+					"JavaScript",
+					"Lisp",
+					"Perl",
+					"PHP",
+					"Python",
+					"Ruby",
+					"Scala",
+					"Scheme"
+				];
+
+				$( "#inputSearch" ).autocomplete({
+					source: availableTags
+				});
+			});
+	 	</script>
+	 	<script>
+			$(function() {
+				$( "#slider" ).slider();
+			});
+	   	</script>
+<!--
+ 		<style>
+			#sp-app {
+				width: 100%;
+				height: 100%;
+			}
+
+			#sp-header {
+  				/*padding: 0.5em 0.5em 0.5em 0.5em;*/
+		 		position: relative;
+				height: 10%;
+
+			}
+		 	#sp-header div {
+		 		position: relative;
+		 		float: left;
+			}
+	
+			#sqlvar div{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		</style>
+-->
 	</head>
 
 	<body>
 		<script>
 			$(document).ready(function(){
-				TAME.init();
+				var configuration = {
+					localhost: '192.168.1.12',
+					remote_zmq_host: 'localhost:38176'
+				};
+
+				var sneak_peek = new SneakPeek(configuration);
+				sneak_peek.initialize();
 			});
 		</script>
+		<div id="sp-app">
+			<div id= "sp-header">
+				<div id="pcap_dropzone_box">
+					<form id="pcap-dropzone" class='dropzone' method="post" action="upload.php" enctype="multipart/form-data">						
+					</form>
+				</div>
+				<div id="pcap_files_info">
+	        		<table id="pcap_file_table" class="table">
+	        	   		<thead>
+	        	   			<tr>
+	        		   			<th><label class="sp-table_header">Files</label></th>
+	        	        		<th><label class="sp-table_header">Last Modified</label></th>
+	    	           			<th><label class="sp-table_header">Size (MB)</label></th>
+	    	           			<th><label class="sp-table_header"># Hosts</label></th>
+		        	   		</tr>
+		            	</thead>
+		            	<tbody id="pcap_file_table_body" class="selectable_pcap_file">
+		            	</tbody>
+                	</table>
+		    	</div>
+		    	<div id="local_host_info">
+	            	<table class="table">
+	            		<thead>
+		            		<tr>
+		            			<th><label class="sp-table_header">Local Info</label></th>
+	            			</tr>
+	            		</thead>
+	            		<tbody>
+		            		<tr>
+		            			<td><label>MAC: </label></td>
+		            			<td><label id="mac_address"></label></td>
+		            		</tr>
+		            		<tr>  
+			                	<td><label>IP: </label></td>
+			                	<td><label id="ip_address"></label></td>
+			                </tr>  
+			                <tr>
+			                	<td><label>Edges: </label></td>
+			                	<td><label id="num_connections"></label></td>
+			                </tr>
+			            </tbody>
+	            	</table>
+		    	</div>
+		    	<div id="administrative_settings">
+	    			<table>
+	    				<thead>
+		    				<tr>
+		    					<th>
+		    						<label class="sp-table_header">Settings </label>
+		    					</th>
+		    				</tr>
+						</thead>
+						<tbody>
+		    				<tr>
+		    					<td>
+		    						<input style="position:relative; float:left;" id="live_capture_checkbox" type="checkbox"/>
+		    						<label style="position:relative; float:left; padding-left: 1em;">Live Capture</label>
+		    					</td>
+		    				</tr>
+		    			</tbody>
+	    			</table>
+		    	</div>
+	  			<div id="search-container">
+	  				<input id="inputSearch" />
+				</div>
+			</div>
+			<div id="scene-container">
+				<canvas id="scene">
+				</canvas>
+			</div>
+		</div>
 	</body>
 </html>
